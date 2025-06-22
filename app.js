@@ -73,7 +73,11 @@ function create() {
   
   //group for column objects
   pipes = this.physics.add.group();
-
+  
+  //responsive bird scale
+  const scaleFactor = Math.min(this.scale.width / 800, this.scale.height / 600);
+  const birdScale = BIRD_SCALE * scaleFactor;
+  
   //create bird 
   bird = this.physics.add.sprite(this.scale.width * 0.2, this.scale.height / 2, 'bird').setScale(BIRD_SCALE);
   bird.setCollideWorldBounds(true);     //keeps bird within bounds
@@ -82,7 +86,7 @@ function create() {
   this.physics.add.collider(bird, this.road, hitPipe, null, this);
   this.physics.add.overlap(bird, pipes, hitPipe, null, this);
 
-  // Responsive font size
+  //responsive font size
   const fontSize = Math.floor(28 * scaleFactor);
   
   //display score
@@ -202,13 +206,14 @@ function resizeGame(gameSize) {
     this.road.displayWidth = width;
   }
 
-  // Scale score text responsively
+  //scale score text responsively
   const scaleFactor = Math.min(width / 800, height / 600);
   if (scoreText) {
     scoreText.setFontSize(Math.floor(28 * scaleFactor));
     scoreText.setPosition(10, 10);
   }
 
+  //scale game text responsively
   if (gameOverText) {
     gameOverText.setFontSize(Math.floor(32 * scaleFactor));
     gameOverText.setPosition(width / 2, height / 2);
