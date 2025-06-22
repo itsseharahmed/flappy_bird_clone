@@ -140,7 +140,7 @@ function create() {
   highScoreText = this.add.text(this.scale.width - 10 , 10, 'High Score: ' + highScore,{
     fontFamily: '"Press Start 2P"',
     fontSize: isMobile ? '14px':'28px',
-    fill: 'black',
+    fill: 'white',
   }).setOrigin(1,0).setDepth(1);    //align top right
 
   //Text displayed on attaining a new highscore
