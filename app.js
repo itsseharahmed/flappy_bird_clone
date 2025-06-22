@@ -1,4 +1,14 @@
+//load font
+WebFont.load({
+    google: {
+      families: ['Press Start 2P']
+    },
+    active: function () {
+      start();
+    }
+  });
 
+function start(){
 //game configuration
 const config = {
   type: Phaser.AUTO,
@@ -258,3 +268,4 @@ function resizeGame(gameSize) {
 window.addEventListener('resize', () => {
   game.scale.resize(window.innerWidth, window.innerHeight);
 });
+}
