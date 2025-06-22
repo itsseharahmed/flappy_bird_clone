@@ -110,6 +110,11 @@ function create() {
     bird.setVelocityY(-350);
   });
 
+  this.input.on('pointerdown', () => {
+    if (gameOver) return restartGame.call(this);
+    bird.setVelocityY(-350);
+  });
+  
   //timer to spawn columns
   pipeTimer = this.time.addEvent({
     delay: PIPE_INTERVAL,
