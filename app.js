@@ -82,6 +82,9 @@ function create() {
   this.physics.add.collider(bird, this.road, hitPipe, null, this);
   this.physics.add.overlap(bird, pipes, hitPipe, null, this);
 
+  // Responsive font size
+  const fontSize = Math.floor(28 * scaleFactor);
+  
   //display score
   scoreText = this.add.text(10, 10, 'Score: 0', {
     fontFamily: '"Press Start 2P"',
@@ -199,8 +202,17 @@ function resizeGame(gameSize) {
     this.road.displayWidth = width;
   }
 
-  if (scoreText) scoreText.setPosition(10, 10);
-  if (gameOverText) gameOverText.setPosition(width / 2, height / 2);
+  // Scale score text responsively
+  const scaleFactor = Math.min(width / 800, height / 600);
+  if (scoreText) {
+    scoreText.setFontSize(Math.floor(28 * scaleFactor));
+    scoreText.setPosition(10, 10);
+  }
+
+  if (gameOverText) {
+    gameOverText.setFontSize(Math.floor(32 * scaleFactor));
+    gameOverText.setPosition(width / 2, height / 2);
+  }
 }
 
 //listener to handle resizing of browser window
