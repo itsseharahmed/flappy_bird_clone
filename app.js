@@ -132,6 +132,25 @@ function create() {
     align: 'center',
     wordWrap: { width: this.scale.width * 0.5 }
   }).setOrigin(0.5).setDepth(1);
+
+    //locally store highscore
+  highScore = parseInt(localStorage.getItem('highScore') || 0);
+
+  //displays highscore on the top right
+  highScoreText = this.add.text(this.scale.width - 10 , 10, 'High Score: ' + highScore,{
+    fontFamily: '"Press Start 2P"',
+    fontSize: isMobile ? '14px':'28px',
+    fill: 'black',
+  }).setOrigin(1,0).setDepth(1);    //align top right
+
+  //Text displayed on attaining a new highscore
+  newHighScoreText = this.add.text(this.scale.width / 2, this.scale.height / 2 - 100, '', {
+    fontFamily: '"Press Start 2P"',
+    fontSize: isMobile ? '16px' : '32px',
+    fill: 'black',
+    align: 'center',
+    wordWrap: { width: this.scale.width * 0.5 }
+  }).setOrigin(0.5).setDepth(1);
   
   //handle spacebar input for jump/restart
   this.input.keyboard.on('keydown-SPACE', () => {
@@ -221,6 +240,15 @@ function addPipePair(first = false) {
 
 //function to handle collisions
 function hitPipe() {
+    
+  if (score > highScore) {
+       highScore = Math.floor(score);
+       localStorage.setItem('highScore', highScore);    //update highscore
+       newHighScoreText.setText('New High Score!\n\n');    
+  }
+    
+  highScoreText.setText('High Score: ' + highScore);
+    
   if (!gameOver) {
     gameOver = true;
     pipeTimer.remove();         //stop spawning new columns
@@ -239,6 +267,11 @@ function restartGame() {
 function resizeGame(gameSize) {
   const width = gameSize.width;
   const height = gameSize.height;
+
+  if (highScoreText) {
+    highScoreText.setFontSize(Math.floor(28 * scaleFactor));
+    highScoreText.setPosition(width - 10, 10);
+  }
 
   if (this.background) {
     this.background.displayWidth = width;
