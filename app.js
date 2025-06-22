@@ -125,7 +125,7 @@ function create() {
   }).setOrigin(0.5).setDepth(1);
 
   //show "Press to start"
-  startText = this.add.text(this.scale.width / 2, this.scale.height / 2 - 100, 'Press SPACE or TAP to start\n\nClone by Sehar Ahmed', {
+  startText = this.add.text(this.scale.width / 2, this.scale.height / 2 - 100, 'Press SPACE or TAP to start\n\nCloned by Sehar Ahmed', {
     fontFamily: '"Press Start 2P"',
     fontSize: this.scale.width < 600 ? '12px' : '20px',
     fill: 'white',
