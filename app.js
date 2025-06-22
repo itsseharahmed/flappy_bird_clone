@@ -89,14 +89,17 @@ function create() {
   //responsive font size
   const fontSize = Math.floor(28 * scaleFactor);
   
+ 
+  const isMobile = this.scale.width < 600;
+
   //display score
   scoreText = this.add.text(10, 10, 'Score: 0', {
     fontFamily: '"Press Start 2P"',
-    fontSize: '28px',
-    fill: 'white'
+    fontSize: isMobile ? '14px' : '28px',
+    fill: 'white',
+    wordWrap: { width: this.scale.width * 0.5 }
   }).setDepth(1);
 
-  const isMobile = this.scale.width < 600;
 
   //displaye text when game is over (initially hidden)
   gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
@@ -106,7 +109,7 @@ function create() {
     align: 'center',
     wordWrap: { width: this.scale.width * 0.9 }
   }).setOrigin(0.5).setDepth(1);
-
+  
   //handle spacebar input for jump/restart
   this.input.keyboard.on('keydown-SPACE', () => {
     if (gameOver) return restartGame.call(this);
