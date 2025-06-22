@@ -31,6 +31,8 @@ let scoreText;
 let gameOver = false;
 let gameOverText;
 let pipeTimer;
+let waitingToStart = true;
+let startText;
 
 //game constants
 const PIPE_SPEED = -350;
@@ -58,6 +60,7 @@ function preload() {
 function create() {
   gameOver = false;
   score = 0;
+  waitingToStart = true;
   
   //handle resizing
   this.scale.on('resize', resizeGame, this);
@@ -81,6 +84,7 @@ function create() {
   //create bird 
   bird = this.physics.add.sprite(this.scale.width * 0.2, this.scale.height / 2, 'bird').setScale(BIRD_SCALE);
   bird.setCollideWorldBounds(true);     //keeps bird within bounds
+  bird.body.allowGravity = false;       //prevent bird from falling until game starts
   
   //add collisions
   this.physics.add.collider(bird, this.road, hitPipe, null, this);
@@ -101,56 +105,75 @@ function create() {
   }).setDepth(1);
 
 
-  //displaye text when game is over (initially hidden)
+  //displays text when game is over (initially hidden)
   gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
     fontFamily: '"Press Start 2P"',
     fontSize: isMobile ? '16px' : '32px',
     fill: 'black',
     align: 'center',
-    wordWrap: { width: this.scale.width * 0.9 }
+    wordWrap: { width: this.scale.width * 0.7 }
+  }).setOrigin(0.5).setDepth(1);
+
+  //show "Press to start"
+  startText = this.add.text(this.scale.width / 2, this.scale.height / 2 - 100, 'Press SPACE or TAP to start', {
+    fontFamily: '"Press Start 2P"',
+    fontSize: this.scale.width < 600 ? '12px' : '20px',
+    fill: 'white',
+    align: 'center',
+    wordWrap: { width: this.scale.width * 0.5 }
   }).setOrigin(0.5).setDepth(1);
   
   //handle spacebar input for jump/restart
   this.input.keyboard.on('keydown-SPACE', () => {
     if (gameOver) return restartGame.call(this);
+    if (waitingToStart) return startGame.call(this);
     bird.setVelocityY(-350);
   });
 
   this.input.on('pointerdown', () => {
     if (gameOver) return restartGame.call(this);
+    if (waitingToStart) return startGame.call(this);
     bird.setVelocityY(-350);
   });
   
-  //timer to spawn columns
+}
+
+//function to start game
+function startGame() {
+  waitingToStart = false;
+  bird.body.allowGravity = true;
+  bird.setVelocityY(-350); //initial flap
+  startText.setVisible(false);
+
   pipeTimer = this.time.addEvent({
     delay: PIPE_INTERVAL,
     callback: () => addPipePair.call(this),
     loop: true
   });
 
-  //add initial column pair near spawn point
-  addPipePair.call(this, true); 
+  //spawn first pipe right away
+  addPipePair.call(this, true);
 }
 
 //function for game loop
 function update() {
-  if (!gameOver && this.road) {
-    this.road.tilePositionX += 2;   //scroll the road while game isn't over
+  if (waitingToStart || gameOver) return;
 
-    pipes.getChildren().forEach(pipe => {
-      //condition for when bird passes a pair of columns
-      if (pipe.x + pipe.displayWidth < bird.x && !pipe.passed) {
-        pipe.passed = true;
-        score += 0.5;                   //update score
-        scoreText.setText('Score: ' + Math.floor(score));
-      }
-
-      //remove columns that are off screen
-      if (pipe.x + pipe.displayWidth < 0) {
-        pipes.remove(pipe, true, true);
-      }
-    });
+  if (this.road) {
+    this.road.tilePositionX += 2;
   }
+
+  pipes.getChildren().forEach(pipe => {
+    if (pipe.x + pipe.displayWidth < bird.x && !pipe.passed) {
+      pipe.passed = true;
+      score += 0.5;
+      scoreText.setText('Score: ' + Math.floor(score));
+    }
+
+    if (pipe.x + pipe.displayWidth < 0) {
+      pipes.remove(pipe, true, true);
+    }
+  });
 }
 
 //function to add a pair of columns
