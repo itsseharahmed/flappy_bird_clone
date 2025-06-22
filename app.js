@@ -96,12 +96,15 @@ function create() {
     fill: 'white'
   }).setDepth(1);
 
+  const isMobile = this.scale.width < 600;
+
   //displaye text when game is over (initially hidden)
   gameOverText = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
     fontFamily: '"Press Start 2P"',
-    fontSize: '32px',
+    fontSize: isMobile ? '16px' : '32px',
     fill: 'black',
-    align: 'center'
+    align: 'center',
+    wordWrap: { width: this.scale.width * 0.9 }
   }).setOrigin(0.5).setDepth(1);
 
   //handle spacebar input for jump/restart
@@ -187,7 +190,7 @@ function hitPipe() {
     pipeTimer.remove();         //stop spawning new columns
     pipes.setVelocityX(0);      //stop all columns
     bird.setTint(0xff0000);     //bird flashes red
-    gameOverText.setText('Score: ' + Math.floor(score) + '\nPress SPACE to restart');
+    gameOverText.setText('Score: ' + Math.floor(score) + '\n\nPress SPACE/Tap to restart');
   }
 }
 
